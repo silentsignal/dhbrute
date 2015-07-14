@@ -1,6 +1,7 @@
 #include <openssl/bn.h>
 #include <iostream>
-#include <stdint.h>
+#include <QHash>
+#include <QByteArray>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ int main(int argc, char **argv) {
 
 	BIGNUM *m, *b, *r;
 	BN_CTX *t = BN_CTX_new();
+	QHash<QByteArray, quint64> seen;
 
 	BN_CTX_init(t);
 	m = BN_new();
@@ -23,12 +25,19 @@ int main(int argc, char **argv) {
 	BN_dec2bn(&b, argv[2]);
 	BN_copy(r, b);
 
-	for (uint64_t i = 0; i < 100000000; i++) {
-		BN_mod_mul(r, r, b, m, t);
-		if (BN_cmp(r, b) == 0) {
-			printf("Found at iteration %lu\n", i);
+	for (quint64 i = 0; i < 10000000; i++) {
+		unsigned char bin[BN_num_bytes(r)];
+		BN_bn2bin(r, bin);
+
+		QByteArray ba((const char*)bin);
+
+		if (seen.contains(ba)) {
+			printf("Found at iteration %llu from iteration %llu\n", i, seen[ba]);
 			break;
 		}
+
+		seen[ba] = i;
+		BN_mod_mul(r, r, b, m, t);
 	}
 
 	return 0;
