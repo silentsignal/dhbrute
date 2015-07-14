@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 		QByteArray ba((const char*)bin);
 
 		if (seen.contains(ba)) {
-			printf("Found at iteration %llu from iteration %llu\n", i, seen[ba]);
+			cout << "Found at iteration " << i << " from iteration " << seen[ba] << endl;
 		} else {
 			seen[ba] = i;
 		}
