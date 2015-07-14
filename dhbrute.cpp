@@ -33,10 +33,9 @@ int main(int argc, char **argv) {
 
 		if (seen.contains(ba)) {
 			printf("Found at iteration %llu from iteration %llu\n", i, seen[ba]);
-			break;
+		} else {
+			seen[ba] = i;
 		}
-
-		seen[ba] = i;
 		BN_mod_mul(r, r, b, m, t);
 	}
 
